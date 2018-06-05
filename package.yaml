@@ -1,0 +1,50 @@
+name:                sorting-machine
+version:             0.1.0.0
+github:              "josselinauguste/sorting-machine"
+license:             MIT
+author:              "Josselin Auguste"
+maintainer:          "jauguste@iblop.net"
+copyright:           "2018 Josselin Auguste"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/josselinauguste/sorting-machine#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  ghc-options:
+    - -Wall -Werror
+
+executables:
+  sorting-machine-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sorting-machine
+
+tests:
+  sorting-machine-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sorting-machine
