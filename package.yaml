@@ -21,11 +21,14 @@ description:         Please see the README on GitHub at <https://github.com/joss
 
 dependencies:
 - base >= 4.7 && < 5
+- text
+- HaskellNet
+- HaskellNet-SSL
 
 library:
   source-dirs: src
   ghc-options:
-    - -Wall -Werror
+    - -Wall
 
 executables:
   sorting-machine-exe:
