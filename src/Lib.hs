@@ -4,10 +4,12 @@ module Lib
   , Server
   , UserName
   , Password
+  , Connection(..)
   )
 where
 
 import           Network.HaskellNet.IMAP
+import           Network.HaskellNet.IMAP.Connection
 import           Network.HaskellNet.IMAP.SSL
 import           Network.HaskellNet.IMAP.Types
 
@@ -17,19 +19,25 @@ type UserName = String
 type Password = String
 type BoxName = String
 
-getMessages :: Server -> UserName -> Password -> BoxName -> IO [MessageUid]
-getMessages server userName password boxName = do
-  conn <- connectIMAPSSL server
-  login conn userName password
+data Connection = Connection {server :: Server, username :: UserName, password :: Password}
+
+getMessages :: Connection -> BoxName -> IO [MessageUid]
+getMessages connection boxName = do
+  conn <- connect connection
   select conn boxName
   uids <- search conn [ALLs]
   logout conn
   pure uids
 
-listBoxes :: Server -> UserName -> Password -> IO [MailboxName]
-listBoxes server userName password = do
-  conn <- connectIMAPSSL server
-  login conn userName password
+listBoxes :: Connection -> IO [MailboxName]
+listBoxes connection = do
+  conn      <- connect connection
   mailboxes <- list conn
   logout conn
   pure $ map snd mailboxes
+
+connect :: Connection -> IO IMAPConnection
+connect connection = do
+  conn <- connectIMAPSSL $ server connection
+  login conn (username connection) (password connection)
+  pure conn

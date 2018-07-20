@@ -6,19 +6,19 @@ import           System.Environment
 
 main :: IO ()
 main = do
-  myServer   <- imapServer
-  myUsername <- username
-  myPassword <- password
-  boxes      <- listBoxes myServer myUsername myPassword
+  myConnection <- connection
+  boxes        <- listBoxes myConnection
   putStr $ intercalate "\n" boxes
-  msgs <- getMessages myServer myUsername myPassword "[Gmail]/All Mail"
+  msgs <- getMessages myConnection "[Gmail]/All Mail"
   print $ length msgs
 
-imapServer :: IO Server
-imapServer = getEnv "IMAP_SERVER"
-
-username :: IO UserName
-username = getEnv "IMAP_USER"
-
-password :: IO Password
-password = getEnv "IMAP_PASS"
+connection :: IO Connection
+connection = do
+  myServer   <- getEnv "IMAP_SERVER"
+  myUsername <- getEnv "IMAP_USER"
+  myPassword <- getEnv "IMAP_PASS"
+  pure Connection
+    { server   = myServer
+    , username = myUsername
+    , password = myPassword
+    }
