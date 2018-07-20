@@ -9,7 +9,7 @@ main = do
   myConnection <- connection
   boxes        <- listBoxes myConnection
   putStr $ intercalate "\n" boxes
-  msgs <- getMessages myConnection "[Gmail]/All Mail"
+  msgs <- getMessages myConnection "INBOX"
   print $ length msgs
 
 connection :: IO Connection

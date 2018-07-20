@@ -8,6 +8,7 @@ module Lib
   )
 where
 
+import           Control.Exception              ( bracket )
 import           Network.HaskellNet.IMAP
 import           Network.HaskellNet.IMAP.Connection
 import           Network.HaskellNet.IMAP.SSL
@@ -33,9 +34,10 @@ listBoxes :: Connection -> IO [MailboxName]
 listBoxes connection = map snd <$> withConnection connection list
 
 withConnection :: Connection -> (IMAPConnection -> IO a) -> IO a
-withConnection connection io = do
-  conn <- connectIMAPSSL $ server connection
-  login conn (username connection) (password connection)
-  result <- io conn
-  logout conn
-  pure result
+withConnection connection io = bracket
+  (connectIMAPSSL $ server connection)
+  logout
+  (\conn -> do
+    login conn (username connection) (password connection)
+    io conn
+  )
