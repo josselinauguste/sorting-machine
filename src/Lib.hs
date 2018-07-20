@@ -22,22 +22,20 @@ type BoxName = String
 data Connection = Connection {server :: Server, username :: UserName, password :: Password}
 
 getMessages :: Connection -> BoxName -> IO [MessageUid]
-getMessages connection boxName = do
-  conn <- connect connection
-  select conn boxName
-  uids <- search conn [ALLs]
-  logout conn
-  pure uids
+getMessages connection boxName = withConnection
+  connection
+  (\conn -> do
+    select conn boxName
+    search conn [ALLs]
+  )
 
 listBoxes :: Connection -> IO [MailboxName]
-listBoxes connection = do
-  conn      <- connect connection
-  mailboxes <- list conn
-  logout conn
-  pure $ map snd mailboxes
+listBoxes connection = map snd <$> withConnection connection list
 
-connect :: Connection -> IO IMAPConnection
-connect connection = do
+withConnection :: Connection -> (IMAPConnection -> IO a) -> IO a
+withConnection connection io = do
   conn <- connectIMAPSSL $ server connection
   login conn (username connection) (password connection)
-  pure conn
+  result <- io conn
+  logout conn
+  pure result
