@@ -6,10 +6,11 @@ import           System.Environment
 
 main :: IO ()
 main = do
-  myConnection <- connection
-  boxes        <- listBoxes myConnection
+  gmailConnection <- connection
+  boxes           <- listBoxes gmailConnection
   putStr $ intercalate "\n" boxes
-  msgs <- getMessages myConnection "INBOX"
+  putStrLn ""
+  msgs <- getMessages gmailConnection "iBlop"
   print $ length msgs
 
 connection :: IO Connection

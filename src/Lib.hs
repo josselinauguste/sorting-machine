@@ -35,9 +35,12 @@ listBoxes connection = map snd <$> withConnection connection list
 
 withConnection :: Connection -> (IMAPConnection -> IO a) -> IO a
 withConnection connection io = bracket
-  (connectIMAPSSL $ server connection)
+  (connectIMAPSSLWithSettings (server connection) imapCfg)
   logout
   (\conn -> do
     login conn (username connection) (password connection)
     io conn
   )
+
+imapCfg :: Settings
+imapCfg = defaultSettingsIMAPSSL { sslMaxLineLength = 100000 }
