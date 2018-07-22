@@ -41,6 +41,8 @@ packages:
 extra-deps:
 - HaskellNet-0.5.1
 - HaskellNet-SSL-0.3.4.0
+- ini-0.3.6
+- text-1.2.3.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

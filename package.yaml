@@ -24,6 +24,8 @@ dependencies:
 - text
 - HaskellNet
 - HaskellNet-SSL
+- ini
+- text
 
 library:
   source-dirs: src

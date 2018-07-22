@@ -1,4 +1,4 @@
-module Lib
+module MailServer
   ( getMessages
   , listBoxes
   , Server
@@ -20,13 +20,13 @@ type UserName = String
 type Password = String
 type BoxName = String
 
-data Connection = Connection {server :: Server, username :: UserName, password :: Password}
+data Connection = Connection {server :: Server, username :: UserName, password :: Password, boxName :: BoxName}
 
-getMessages :: Connection -> BoxName -> IO [MessageUid]
-getMessages connection boxName = withConnection
+getMessages :: Connection -> IO [MessageUid]
+getMessages connection = withConnection
   connection
   (\conn -> do
-    select conn boxName
+    select conn (boxName connection)
     search conn [ALLs]
   )
 

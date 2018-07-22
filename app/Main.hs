@@ -1,25 +1,18 @@
 module Main where
 
+import           Configuration
 import           Data.List                      ( intercalate )
-import           Lib
-import           System.Environment
+import           MailServer
 
 main :: IO ()
 main = do
-  gmailConnection <- connection
-  boxes           <- listBoxes gmailConnection
+  connections <- loadConnections
+  sequence_ $ printConnection <$> connections
+
+printConnection :: Connection -> IO ()
+printConnection connection = do
+  boxes <- listBoxes connection
   putStr $ intercalate "\n" boxes
   putStrLn ""
-  msgs <- getMessages gmailConnection "iBlop"
+  msgs <- getMessages connection
   print $ length msgs
-
-connection :: IO Connection
-connection = do
-  myServer   <- getEnv "IMAP_SERVER"
-  myUsername <- getEnv "IMAP_USER"
-  myPassword <- getEnv "IMAP_PASS"
-  pure Connection
-    { server   = myServer
-    , username = myUsername
-    , password = myPassword
-    }
